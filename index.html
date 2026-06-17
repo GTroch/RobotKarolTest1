@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robot Karol – Vorbereitungstest Klasse 7</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#eef2f7;color:#2d3748;padding:20px;max-width:920px;margin:0 auto}
+
+/* HEADER */
+.page-header{background:linear-gradient(135deg,#1a365d 0%,#2b6cb0 100%);color:white;padding:32px 28px;border-radius:14px;margin-bottom:22px;box-shadow:0 6px 24px rgba(26,54,93,.35);text-align:center}
+.page-header h1{font-size:1.85em;margin-bottom:6px;letter-spacing:-.5px}
+.page-header .sub{font-size:.97em;opacity:.82;margin-bottom:16px}
+.badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.badge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);padding:4px 13px;border-radius:20px;font-size:.82em}
+
+/* PROGRESS */
+.prog-wrap{background:white;border-radius:12px;padding:16px 22px;margin-bottom:22px;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.prog-top{font-size:.88em;color:#4a5568;display:flex;justify-content:space-between;margin-bottom:9px}
+.prog-outer{background:#e2e8f0;border-radius:10px;height:11px;overflow:hidden}
+.prog-inner{background:linear-gradient(90deg,#48bb78,#2b6cb0);height:100%;border-radius:10px;transition:width .5s ease;width:0%}
+
+/* REF PANEL */
+.ref-panel{background:white;border-radius:12px;padding:18px 22px;margin-bottom:22px;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.ref-panel h2{font-size:.95em;color:#2b6cb0;margin-bottom:0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding-bottom:0;user-select:none}
+.ref-panel h2 span{font-size:.8em;opacity:.7}
+#ref-content{margin-top:14px}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:6px}
+.ri{background:#f7fafc;border-radius:6px;padding:5px 10px;font-size:.8em;display:flex;gap:7px;align-items:baseline}
+.ri code{color:#2b6cb0;font-weight:700;font-family:'Consolas',monospace;white-space:nowrap}
+.ri span{color:#4a5568}
+.ref-sep{font-size:.75em;font-weight:700;color:#718096;margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* EXERCISE */
+.exercise{background:white;border-radius:12px;margin-bottom:22px;box-shadow:0 2px 12px rgba(0,0,0,.07);overflow:hidden}
+.ex-head{padding:16px 22px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:14px}
+.ex-num{background:#2b6cb0;color:white;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1em;flex-shrink:0}
+.ex-meta{flex:1;min-width:0}
+.ex-title{font-weight:700;font-size:1.08em;color:#1a365d}
+.ex-topic{font-size:.78em;color:#718096;margin-top:1px}
+.diff{font-size:.76em;padding:3px 10px;border-radius:12px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.d2{background:#fefcbf;color:#744210}
+.d3{background:#feebc8;color:#c05621}
+.d4{background:#fed7d7;color:#9b2c2c}
+
+.ex-body{padding:18px 22px}
+
+.task-text{background:#ebf8ff;border-left:4px solid #3182ce;border-radius:0 8px 8px 0;padding:11px 15px;margin-bottom:13px;font-size:.91em;line-height:1.7}
+.task-text b{color:#2c5282}
+.hint{background:#fffff0;border:1px solid #ecc94b;border-radius:6px;padding:7px 11px;margin-bottom:13px;font-size:.83em;color:#7b6814}
+.hint::before{content:"💡 Tipp: "}
+
+/* CODE BLOCKS */
+.code-block{background:#1e2433;border-radius:8px;padding:15px 20px;margin-bottom:13px;font-family:'Consolas','Courier New',monospace;font-size:.89em;line-height:2;overflow-x:auto}
+.cl{display:block;white-space:nowrap}
+.cl.i1{padding-left:1.6em}
+.cl.i2{padding-left:3.2em}
+.cl.i3{padding-left:4.8em}
+.kw{color:#63b3ed;font-weight:700}
+.fn{color:#68d391}
+.cd{color:#f6ad55}
+.cm{color:#718096;font-style:italic}
+.nm{color:#fc8181}
+.pl{color:#e2e8f0}
+
+.blank{display:inline-block;background:#252f42;border:2px dashed #f6ad55;border-radius:4px;vertical-align:middle;min-width:88px}
+.blank-input{background:transparent;border:none;outline:none;color:#fbd38d;font-family:'Consolas','Courier New',monospace;font-size:inherit;padding:0 7px;min-width:84px;text-align:center}
+.blank-input.ok{color:#9ae6b4}
+.blank-input.err{color:#fc8181}
+.blank.ok{background:#1a3228;border-color:#48bb78;border-style:solid}
+.blank.err{background:#3a1a1a;border-color:#fc8181;border-style:solid}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px}
+.btn{padding:8px 17px;border:none;border-radius:8px;cursor:pointer;font-size:.86em;font-weight:600;transition:filter .15s}
+.btn:hover{filter:brightness(.92)}
+.btn:active{filter:brightness(.85)}
+.btn-chk{background:#2b6cb0;color:white}
+.btn-sol{background:#e2e8f0;color:#4a5568}
+.btn-rst{background:#fff5f5;color:#c53030;border:1px solid #fed7d7}
+.feedback{margin-top:10px;font-size:.86em;font-weight:600;min-height:1.2em}
+.fb-ok{color:#276749}
+.fb-err{color:#c53030}
+
+/* SOLUTION */
+.sol-box{display:none;margin-top:15px;border-top:2px dashed #c6f6d5;padding-top:14px}
+.sol-box.show{display:block}
+.sol-label{font-size:.86em;font-weight:700;color:#276749;margin-bottom:9px}
+.sol-code{background:#1a2e1a;border:2px solid #276749;border-radius:8px;padding:15px 20px;font-family:'Consolas','Courier New',monospace;font-size:.89em;line-height:2;overflow-x:auto}
+.sc{display:block;white-space:nowrap}
+.sc.i1{padding-left:1.6em}
+.sc.i2{padding-left:3.2em}
+.sc.i3{padding-left:4.8em}
+.fil{color:#fbd38d;font-weight:700;background:rgba(251,211,77,.15);padding:1px 5px;border-radius:3px}
+.skw{color:#63b3ed;font-weight:700}
+.sfn{color:#68d391}
+.scd{color:#f6ad55}
+.spl{color:#9ae6b4}
+
+/* FOOTER */
+.page-footer{text-align:center;color:#a0aec0;font-size:.78em;margin-top:20px;padding:14px}
+
+@media(max-width:580px){
+  body{padding:10px}
+  .page-header h1{font-size:1.3em}
+  .ex-head{flex-wrap:wrap}
+  .diff{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="page-header">
+  <h1>🤖 Robot Karol – Vorbereitungstest</h1>
+  <div class="sub">Informatik · Klasse 7 · Programmieren mit dem virtuellen Roboter</div>
+  <div class="badges">
+    <span class="badge">📋 8 Aufgaben</span>
+    <span class="badge">⏱️ ca. 45 Minuten</span>
+    <span class="badge">✏️ Lücken ausfüllen</span>
+    <span class="badge">🔓 Lösungen auf Knopfdruck</span>
+  </div>
+</div>
+
+<!-- ===== PROGRESS ===== -->
+<div class="prog-wrap">
+  <div class="prog-top">
+    <span>📊 Fortschritt</span>
+    <span id="prog-text">0 von 8 Aufgaben gelöst</span>
+  </div>
+  <div class="prog-outer"><div class="prog-inner" id="prog-bar"></div></div>
+</div>
+
+<!-- ===== REFERENCE ===== -->
+<div class="ref-panel">
+  <h2 onclick="toggleRef()">📖 Schnell-Referenz: Befehle &amp; Strukturen <span id="ref-arrow">▲</span></h2>
+  <div id="ref-content">
+    <div class="ref-sep">Grundbefehle</div>
+    <div class="ref-grid">
+      <div class="ri"><code>Schritt</code><span>1 Schritt vorwärts</span></div>
+      <div class="ri"><code>Schritt(n)</code><span>n Schritte vorwärts</span></div>
+      <div class="ri"><code>LinksDrehen</code><span>90° nach links</span></div>
+      <div class="ri"><code>RechtsDrehen</code><span>90° nach rechts</span></div>
+      <div class="ri"><code>Hinlegen</code><span>Ziegel ablegen</span></div>
+      <div class="ri"><code>Aufheben</code><span>Ziegel aufheben</span></div>
+      <div class="ri"><code>MarkeSetzen</code><span>Marke auf Karol's Feld</span></div>
+      <div class="ri"><code>MarkeLöschen</code><span>Marke entfernen</span></div>
+      <div class="ri"><code>Ton</code><span>Piepton ausgeben</span></div>
+      <div class="ri"><code>Beenden</code><span>Programm beenden</span></div>
+    </div>
+    <div class="ref-sep">Bedingungen</div>
+    <div class="ref-grid">
+      <div class="ri"><code>IstWand</code><span>Wand direkt vor Karol?</span></div>
+      <div class="ri"><code>NichtIstWand</code><span>Keine Wand vor Karol?</span></div>
+      <div class="ri"><code>IstZiegel</code><span>Ziegel direkt vor Karol?</span></div>
+      <div class="ri"><code>NichtIstZiegel</code><span>Kein Ziegel vor Karol?</span></div>
+      <div class="ri"><code>IstMarke</code><span>Karol steht auf Marke?</span></div>
+      <div class="ri"><code>NichtIstMarke</code><span>Karol nicht auf Marke?</span></div>
+    </div>
+    <div class="ref-sep">Kontrollstrukturen</div>
+    <div class="ref-grid">
+      <div class="ri"><code>wiederhole n mal</code><span>Zählschleife</span></div>
+      <div class="ri"><code>wiederhole solange B</code><span>Bedingte Schleife</span></div>
+      <div class="ri"><code>wenn B dann … *wenn</code><span>Einseitige Verzweigung</span></div>
+      <div class="ri"><code>wenn B dann … sonst … *wenn</code><span>Zweiseitige Verzweigung</span></div>
+      <div class="ri"><code>Anweisung Name … *Anweisung</code><span>Eigene Anweisung</span></div>
+      <div class="ri"><code>Bedingung Name … *Bedingung</code><span>Eigene Bedingung</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUFGABE 1 ===================== -->
+<div class="exercise" id="ex1">
+  <div class="ex-head">
+    <div class="ex-num">1</div>
+    <div class="ex-meta">
+      <div class="ex-title">Ziegelreihe legen</div>
+      <div class="ex-topic">Zählschleife · <code>wiederhole n mal</code></div>
+    </div>
+    <span class="diff d2">⭐⭐ Mittel</span>
+  </div>
+  <div class="ex-body">
+    <div class="task-text">
+      Karol steht am Anfang einer Reihe. Er soll genau <b>5 Schritte</b> gehen und dabei auf jedem Feld einen <b>Ziegel hinlegen</b>.
+      Ergänze die Zählschleife: Wie oft wird wiederholt? Welcher Bewegungsbefehl fehlt?
+    </div>
+    <div class="hint">Eine Zählschleife wiederholt die Befehle darin eine feste Anzahl mal.</div>
+    <div class="code-block">
+      <span class="cl"><span class="kw">Programm</span></span>
+      <span class="cl i1"><span class="kw">wiederhole</span> <span class="blank"><input class="blank-input" id="e1b1" size="3" maxlength="4" placeholder="?"></span> <span class="kw">mal</span></span>
+      <span class="cl i2"><span class="fn">Hinlegen</span></span>
+      <span class="cl i2"><span class="blank"><input class="blank-input" id="e1b2" size="10" maxlength="12" placeholder="???"></span></span>
+      <span class="cl i1"><span class="kw">*wiederhole</span></span>
+      <span class="cl"><span class="kw">*Programm</span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-chk" onclick="check('1',['5','Schritt'])">✅ Antwort prüfen</button>
+      <button class="btn btn-sol" id="bs1" onclick="toggleSol('1')">🔓 Lösung anzeigen</button>
+      <button class="btn btn-rst" onclick="resetEx('1')">↺ Zurücksetzen</button>
+    </div>
+    <div class="feedback" id="fb1"></div>
+    <div class="sol-box" id="sol1">
+      <div class="sol-label">✅ Musterlösung – die Lücken sind hervorgehoben:</div>
+      <div class="sol-code">
+        <span class="sc"><span class="skw">Programm</span></span>
+        <span class="sc i1"><span class="skw">wiederhole</span> <span class="fil">5</span> <span class="skw">mal</span></span>
+        <span class="sc i2"><span class="sfn">Hinlegen</span></span>
+        <span class="sc i2"><span class="fil">Schritt</span></span>
+        <span class="sc i1"><span class="skw">*wiederhole</span></span>
+        <span class="sc"><span class="skw">*Programm</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUFGABE 2 ===================== -->
+<div class="exercise" id="ex2">
+  <div class="ex-head">
+    <div class="ex-num">2</div>
+    <div class="ex-meta">
+      <div class="ex-title">Eigene Anweisung – Umdrehen</div>
+      <div class="ex-topic">Anweisungen (Prozeduren)</div>
+    </div>
+    <span class="diff d2">⭐⭐ Mittel</span>
+  </div>
+  <div class="ex-body">
+    <div class="task-text">
+      Karol soll eine eigene Anweisung <b>Umdrehen</b> erhalten, die ihn um 180° dreht (= zweimal links drehen).
+      Ergänze den <b>Namen</b> der Anweisung in Zeile 1 und den <b>fehlenden Drehbefehl</b> in Zeile 3.
+    </div>
+    <div class="hint">Anweisungen stehen vor dem Hauptprogramm und werden dort bei ihrem Namen aufgerufen.</div>
+    <div class="code-block">
+      <span class="cl"><span class="kw">Anweisung</span> <span class="blank"><input class="blank-input" id="e2b1" size="12" maxlength="20" placeholder="???"></span></span>
+      <span class="cl i1"><span class="fn">LinksDrehen</span></span>
+      <span class="cl i1"><span class="blank"><input class="blank-input" id="e2b2" size="14" maxlength="16" placeholder="???"></span></span>
+      <span class="cl"><span class="kw">*Anweisung</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="kw">Programm</span></span>
+      <span class="cl i1"><span class="fn">Schritt</span>(<span class="nm">4</span>)</span>
+      <span class="cl i1"><span class="fn">Umdrehen</span></span>
+      <span class="cl i1"><span class="fn">Schritt</span>(<span class="nm">4</span>)</span>
+      <span class="cl"><span class="kw">*Programm</span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-chk" onclick="check('2',['Umdrehen','LinksDrehen'])">✅ Antwort prüfen</button>
+      <button class="btn btn-sol" id="bs2" onclick="toggleSol('2')">🔓 Lösung anzeigen</button>
+      <button class="btn btn-rst" onclick="resetEx('2')">↺ Zurücksetzen</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+    <div class="sol-box" id="sol2">
+      <div class="sol-label">✅ Musterlösung:</div>
+      <div class="sol-code">
+        <span class="sc"><span class="skw">Anweisung</span> <span class="fil">Umdrehen</span></span>
+        <span class="sc i1"><span class="sfn">LinksDrehen</span></span>
+        <span class="sc i1"><span class="fil">LinksDrehen</span></span>
+        <span class="sc"><span class="skw">*Anweisung</span></span>
+        <span class="sc">&nbsp;</span>
+        <span class="sc"><span class="skw">Programm</span></span>
+        <span class="sc i1"><span class="sfn">Schritt</span>(4)</span>
+        <span class="sc i1"><span class="sfn">Umdrehen</span></span>
+        <span class="sc i1"><span class="sfn">Schritt</span>(4)</span>
+        <span class="sc"><span class="skw">*Programm</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUFGABE 3 ===================== -->
+<div class="exercise" id="ex3">
+  <div class="ex-head">
+    <div class="ex-num">3</div>
+    <div class="ex-meta">
+      <div class="ex-title">Bis zur Wand laufen</div>
+      <div class="ex-topic">Bedingte Schleife · <code>wiederhole solange</code></div>
+    </div>
+    <span class="diff d2">⭐⭐ Mittel</span>
+  </div>
+  <div class="ex-body">
+    <div class="task-text">
+      Karol soll so lange geradeaus laufen, bis er eine <b>Wand</b> vor sich hat. Wenn er die Wand erreicht hat, soll er eine <b>Marke setzen</b>.
+      Ergänze die fehlende <b>Bedingung</b> der Schleife und den Befehl <b>nach</b> der Schleife.
+    </div>
+    <div class="hint">Die Bedingungsschleife läuft, <em>solange</em> die Bedingung wahr ist – also solange <em>noch keine Wand</em> vor Karol ist.</div>
+    <div class="code-block">
+      <span class="cl"><span class="kw">Programm</span></span>
+      <span class="cl i1"><span class="kw">wiederhole solange</span> <span class="blank"><input class="blank-input" id="e3b1" size="14" maxlength="18" placeholder="???"></span></span>
+      <span class="cl i2"><span class="fn">Schritt</span></span>
+      <span class="cl i1"><span class="kw">*wiederhole</span></span>
+      <span class="cl i1"><span class="blank"><input class="blank-input" id="e3b2" size="14" maxlength="16" placeholder="???"></span></span>
+      <span class="cl"><span class="kw">*Programm</span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-chk" onclick="check('3',['NichtIstWand','MarkeSetzen'])">✅ Antwort prüfen</button>
+      <button class="btn btn-sol" id="bs3" onclick="toggleSol('3')">🔓 Lösung anzeigen</button>
+      <button class="btn btn-rst" onclick="resetEx('3')">↺ Zurücksetzen</button>
+    </div>
+    <div class="feedback" id="fb3"></div>
+    <div class="sol-box" id="sol3">
+      <div class="sol-label">✅ Musterlösung:</div>
+      <div class="sol-code">
+        <span class="sc"><span class="skw">Programm</span></span>
+        <span class="sc i1"><span class="skw">wiederhole solange</span> <span class="fil">NichtIstWand</span></span>
+        <span class="sc i2"><span class="sfn">Schritt</span></span>
+        <span class="sc i1"><span class="skw">*wiederhole</span></span>
+        <span class="sc i1"><span class="fil">MarkeSetzen</span></span>
+        <span class="sc"><span class="skw">*Programm</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUFGABE 4 ===================== -->
+<div class="exercise" id="ex4">
+  <div class="ex-head">
+    <div class="ex-num">4</div>
+    <div class="ex-meta">
+      <div class="ex-title">Ziegel aufheben – einseitige Verzweigung</div>
+      <div class="ex-topic">Verzweigung · <code>wenn … dann … *wenn</code></div>
+    </div>
+    <span class="diff d3">⭐⭐⭐ Mittel-Hoch</span>
+  </div>
+  <div class="ex-body">
+    <div class="task-text">
+      Karol läuft eine Reihe entlang. Auf manchen Feldern liegen Ziegel. Immer wenn sich ein Ziegel <b>vor</b> Karol befindet, soll er ihn <b>aufheben</b>.
+      Ergänze die <b>Bedingung</b> und den <b>Befehl</b> in der Verzweigung.
+    </div>
+    <div class="hint">Die einseitige Verzweigung führt den eingerückten Befehl nur aus, wenn die Bedingung wahr ist.</div>
+    <div class="code-block">
+      <span class="cl"><span class="kw">Programm</span></span>
+      <span class="cl i1"><span class="kw">wiederhole solange</span> <span class="cd">NichtIstWand</span></span>
+      <span class="cl i2"><span class="kw">wenn</span> <span class="blank"><input class="blank-input" id="e4b1" size="11" maxlength="16" placeholder="???"></span> <span class="kw">dann</span></span>
+      <span class="cl i3"><span class="blank"><input class="blank-input" id="e4b2" size="10" maxlength="12" placeholder="???"></span></span>
+      <span class="cl i2"><span class="kw">*wenn</span></span>
+      <span class="cl i2"><span class="fn">Schritt</span></span>
+      <span class="cl i1"><span class="kw">*wiederhole</span></span>
+      <span class="cl"><span class="kw">*Programm</span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-chk" onclick="check('4',['IstZiegel','Aufheben'])">✅ Antwort prüfen</button>
+      <button class="btn btn-sol" id="bs4" onclick="toggleSol('4')">🔓 Lösung anzeigen</button>
+      <button class="btn btn-rst" onclick="resetEx('4')">↺ Zurücksetzen</button>
+    </div>
+    <div class="feedback" id="fb4"></div>
+    <div class="sol-box" id="sol4">
+      <div class="sol-label">✅ Musterlösung:</div>
+      <div class="sol-code">
+        <span class="sc"><span class="skw">Programm</span></span>
+        <span class="sc i1"><span class="skw">wiederhole solange</span> <span class="scd">NichtIstWand</span></span>
+        <span class="sc i2"><span class="skw">wenn</span> <span class="fil">IstZiegel</span> <span class="skw">dann</span></span>
+        <span class="sc i3"><span class="fil">Aufheben</span></span>
+        <span class="sc i2"><span class="skw">*wenn</span></span>
+        <span class="sc i2"><span class="sfn">Schritt</span></span>
+        <span class="sc i1"><span class="skw">*wiederhole</span></span>
+        <span class="sc"><span class="skw">*Programm</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUFGABE 5 ===================== -->
+<div class="exercise" id="ex5">
+  <div class="ex-head">
+    <div class="ex-num">5</div>
+    <div class="ex-meta">
+      <div class="ex-title">Ziegel oder Marke – zweiseitige Verzweigung</div>
+      <div class="ex-topic">Verzweigung · <code>wenn … dann … sonst … *wenn</code></div>
+    </div>
+    <span class="diff d3">⭐⭐⭐ Mittel-Hoch</span>
+  </div>
+  <div class="ex-body">
+    <div class="task-text">
+      Karol läuft 8 Schritte. Auf jedem Feld gilt: Liegt direkt <b>vor</b> ihm ein Ziegel, soll er ihn <b>aufheben</b>.
+      Liegt kein Ziegel vor ihm, soll er eine <b>Marke setzen</b>.
+      Ergänze den fehlenden <b>Befehl</b> im <em>dann</em>-Zweig und das <b>Schlüsselwort</b> für den zweiten Zweig.
+    </div>
+    <div class="hint">Die zweiseitige Verzweigung hat zwei Teile: <em>dann</em> (Bedingung wahr) und <em>sonst</em> (Bedingung falsch).</div>
+    <div class="code-block">
+      <span class="cl"><span class="kw">Programm</span></span>
+      <span class="cl i1"><span class="kw">wiederhole</span> <span class="nm">8</span> <span class="kw">mal</span></span>
+      <span class="cl i2"><span class="kw">wenn</span> <span class="cd">IstZiegel</span> <span class="kw">dann</span></span>
+      <span class="cl i3"><span class="blank"><input class="blank-input" id="e5b1" size="10" maxlength="12" placeholder="???"></span></span>
+      <span class="cl i2"><span class="blank"><input class="blank-input" id="e5b2" size="6" maxlength="8" placeholder="???"></span></span>
+      <span class="cl i3"><span class="fn">MarkeSetzen</span></span>
+      <span class="cl i2"><span class="kw">*wenn</span></span>
+      <span class="cl i2"><span class="fn">Schritt</span></span>
+      <span class="cl i1"><span class="kw">*wiederhole</span></span>
+      <span class="cl"><span class="kw">*Programm</span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-chk" onclick="check('5',['Aufheben','sonst'])">✅ Antwort prüfen</button>
+      <button class="btn btn-sol" id="bs5" onclick="toggleSol('5')">🔓 Lösung anzeigen</button>
+      <button class="btn btn-rst" onclick="resetEx('5')">↺ Zurücksetzen</button>
+    </div>
+    <div class="feedback" id="fb5"></div>
+    <div class="sol-box" id="sol5">
+      <div class="sol-label">✅ Musterlösung:</div>
+      <div class="sol-code">
+        <span class="sc"><span class="skw">Programm</span></span>
+        <span class="sc i1"><span class="skw">wiederhole</span> 8 <span class="skw">mal</span></span>
+        <span class="sc i2"><span class="skw">wenn</span> <span class="scd">IstZiegel</span> <span class="skw">dann</span></span>
+        <span class="sc i3"><span class="fil">Aufheben</span></span>
+        <span class="sc i2"><span class="fil">sonst</span></span>
+        <span class="sc i3"><span class="sfn">MarkeSetzen</span></span>
+        <span class="sc i2"><span class="skw">*wenn</span></span>
+        <span class="sc i2"><span class="sfn">Schritt</span></span>
+        <span class="sc i1"><span class="skw">*wiederhole</span></span>
+        <span class="sc"><span class="skw">*Programm</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUFGABE 6 ===================== -->
+<div class="exercise" id="ex6">
+  <div class="ex-head">
+    <div class="ex-num">6</div>
+    <div class="ex-meta">
+      <div class="ex-title">Quadrat aus Ziegeln bauen</div>
+      <div class="ex-topic">Eigene Anweisung · verschachtelte Schleifen</div>
+    </div>
+    <span class="diff d3">⭐⭐⭐ Mittel-Hoch</span>
+  </div>
+  <div class="ex-body">
+    <div class="task-text">
+      Karol soll ein Quadrat aus Ziegeln bauen. Jede Seite besteht aus <b>4 Feldern</b> mit je einem Ziegel.
+      Die Anweisung <b>Seite</b> legt eine Seite und dreht sich danach in die richtige Richtung für die nächste Seite.
+      Das Hauptprogramm ruft <b>Seite</b> viermal auf – einmal für jede Seite.
+      Ergänze die drei fehlenden Teile.
+    </div>
+    <div class="hint">Nach jeder Seite muss Karol um 90° drehen, damit er für die nächste Seite richtig steht. Ein Quadrat hat 4 Seiten.</div>
+    <div class="code-block">
+      <span class="cl"><span class="kw">Anweisung</span> <span class="fn">Seite</span></span>
+      <span class="cl i1"><span class="kw">wiederhole</span> <span class="blank"><input class="blank-input" id="e6b1" size="3" maxlength="4" placeholder="?"></span> <span class="kw">mal</span></span>
+      <span class="cl i2"><span class="fn">Hinlegen</span></span>
+      <span class="cl i2"><span class="fn">Schritt</span></span>
+      <span class="cl i1"><span class="kw">*wiederhole</span></span>
+      <span class="cl i1"><span class="blank"><input class="blank-input" id="e6b2" size="14" maxlength="16" placeholder="???"></span></span>
+      <span class="cl"><span class="kw">*Anweisung</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="kw">Programm</span></span>
+      <span class="cl i1"><span class="kw">wiederhole</span> <span class="blank"><input class="blank-input" id="e6b3" size="3" maxlength="4" placeholder="?"></span> <span class="kw">mal</span></span>
+      <span class="cl i2"><span class="fn">Seite</span></span>
+      <span class="cl i1"><span class="kw">*wiederhole</span></span>
+      <span class="cl"><span class="kw">*Programm</span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-chk" onclick="check('6',['4','LinksDrehen','4'])">✅ Antwort prüfen</button>
+      <button class="btn btn-sol" id="bs6" onclick="toggleSol('6')">🔓 Lösung anzeigen</button>
+      <button class="btn btn-rst" onclick="resetEx('6')">↺ Zurücksetzen</button>
+    </div>
+    <div class="feedback" id="fb6"></div>
+    <div class="sol-box" id="sol6">
+      <div class="sol-label">✅ Musterlösung:</div>
+      <div class="sol-code">
+        <span class="sc"><span class="skw">Anweisung</span> <span class="sfn">Seite</span></span>
+        <span class="sc i1"><span class="skw">wiederhole</span> <span class="fil">4</span> <span class="skw">mal</span></span>
+        <span class="sc i2"><span class="sfn">Hinlegen</span></span>
+        <span class="sc i2"><span class="sfn">Schritt</span></span>
+        <span class="sc i1"><span class="skw">*wiederhole</span></span>
+        <span class="sc i1"><span class="fil">LinksDrehen</span></span>
+        <span class="sc"><span class="skw">*Anweisung</span></span>
+        <span class="sc">&nbsp;</span>
+        <span class="sc"><span class="skw">Programm</span></span>
+        <span class="sc i1"><span class="skw">wiederhole</span> <span class="fil">4</span> <span class="skw">mal</span></span>
+        <span class="sc i2"><span class="sfn">Seite</span></span>
+        <span class="sc i1"><span class="skw">*wiederhole</span></span>
+        <span class="sc"><span class="skw">*Programm</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUFGABE 7 ===================== -->
+<div class="exercise" id="ex7">
+  <div class="ex-head">
+    <div class="ex-num">7</div>
+    <div class="ex-meta">
+      <div class="ex-title">Eigene Bedingung – IstWandRechts</div>
+      <div class="ex-topic">Eigene Bedingung · <code>Bedingung … *Bedingung</code></div>
+    </div>
+    <span class="diff d4">⭐⭐⭐⭐ Hoch</span>
+  </div>
+  <div class="ex-body">
+    <div class="task-text">
+      Schreibe eine eigene Bedingung <b>IstWandRechts</b>, die prüft, ob sich rechts von Karol eine Wand befindet.
+      <br>Wichtige Regel: Karol muss am Ende der Bedingung wieder in die <b>ursprüngliche Richtung</b> schauen!
+      Ergänze die vier fehlenden Teile.
+    </div>
+    <div class="hint">Eine eigene Bedingung beginnt mit einem Startwert (falsch oder wahr) und setzt den Rückgabewert mit <code>wahr</code> oder <code>falsch</code>. Am Ende muss Karol wieder in die Ausgangsrichtung gedreht werden.</div>
+    <div class="code-block">
+      <span class="cl"><span class="kw">Bedingung</span> <span class="cd">IstWandRechts</span></span>
+      <span class="cl i1"><span class="blank"><input class="blank-input" id="e7b1" size="7" maxlength="8" placeholder="???"></span> <span class="cm">// Startwert</span></span>
+      <span class="cl i1"><span class="blank"><input class="blank-input" id="e7b2" size="14" maxlength="16" placeholder="???"></span> <span class="cm">// kurz nach rechts schauen</span></span>
+      <span class="cl i1"><span class="kw">wenn</span> <span class="blank"><input class="blank-input" id="e7b3" size="10" maxlength="12" placeholder="???"></span> <span class="kw">dann</span></span>
+      <span class="cl i2"><span class="kw">wahr</span></span>
+      <span class="cl i1"><span class="kw">*wenn</span></span>
+      <span class="cl i1"><span class="blank"><input class="blank-input" id="e7b4" size="14" maxlength="16" placeholder="???"></span> <span class="cm">// wieder zurückdrehen!</span></span>
+      <span class="cl"><span class="kw">*Bedingung</span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-chk" onclick="check('7',['falsch','RechtsDrehen','IstWand','LinksDrehen'])">✅ Antwort prüfen</button>
+      <button class="btn btn-sol" id="bs7" onclick="toggleSol('7')">🔓 Lösung anzeigen</button>
+      <button class="btn btn-rst" onclick="resetEx('7')">↺ Zurücksetzen</button>
+    </div>
+    <div class="feedback" id="fb7"></div>
+    <div class="sol-box" id="sol7">
+      <div class="sol-label">✅ Musterlösung:</div>
+      <div class="sol-code">
+        <span class="sc"><span class="skw">Bedingung</span> <span class="scd">IstWandRechts</span></span>
+        <span class="sc i1"><span class="fil">falsch</span> <span class="spl">// Startwert: noch keine Wand rechts</span></span>
+        <span class="sc i1"><span class="fil">RechtsDrehen</span> <span class="spl">// kurz nach rechts schauen</span></span>
+        <span class="sc i1"><span class="skw">wenn</span> <span class="fil">IstWand</span> <span class="skw">dann</span></span>
+        <span class="sc i2"><span class="skw">wahr</span> <span class="spl">// Wand rechts gefunden!</span></span>
+        <span class="sc i1"><span class="skw">*wenn</span></span>
+        <span class="sc i1"><span class="fil">LinksDrehen</span> <span class="spl">// wieder zurückdrehen!</span></span>
+        <span class="sc"><span class="skw">*Bedingung</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUFGABE 8 ===================== -->
+<div class="exercise" id="ex8">
+  <div class="ex-head">
+    <div class="ex-num">8</div>
+    <div class="ex-meta">
+      <div class="ex-title">Rand einer Welt pflastern</div>
+      <div class="ex-topic">Kombiniert: Anweisung · bedingte Schleife · Verzweigung</div>
+    </div>
+    <span class="diff d4">⭐⭐⭐⭐ Hoch</span>
+  </div>
+  <div class="ex-body">
+    <div class="task-text">
+      Karol soll den <b>gesamten Rand</b> einer quadratischen Welt mit Ziegeln belegen.
+      Die Anweisung <b>Rand</b> durchläuft alle 4 Seiten: Auf jeder Seite legt Karol Ziegel, solange keine Wand vor ihm ist, und dreht dann an der Ecke ab.
+      Das Hauptprogramm soll die Anweisung <b>einmal aufrufen</b>.
+      Ergänze die drei fehlenden Teile.
+    </div>
+    <div class="hint">Karol läuft jede Seite entlang (<code>wiederhole solange NichtIstWand</code>) und dreht an der Ecke ab. Das Ganze wird 4-mal wiederholt – für jede Seite einmal.</div>
+    <div class="code-block">
+      <span class="cl"><span class="kw">Anweisung</span> <span class="fn">Rand</span></span>
+      <span class="cl i1"><span class="kw">wiederhole</span> <span class="nm">4</span> <span class="kw">mal</span></span>
+      <span class="cl i2"><span class="kw">wiederhole solange</span> <span class="blank"><input class="blank-input" id="e8b1" size="14" maxlength="18" placeholder="???"></span></span>
+      <span class="cl i3"><span class="fn">Hinlegen</span></span>
+      <span class="cl i3"><span class="fn">Schritt</span></span>
+      <span class="cl i2"><span class="kw">*wiederhole</span></span>
+      <span class="cl i2"><span class="blank"><input class="blank-input" id="e8b2" size="14" maxlength="16" placeholder="???"></span></span>
+      <span class="cl i1"><span class="kw">*wiederhole</span></span>
+      <span class="cl"><span class="kw">*Anweisung</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="kw">Programm</span></span>
+      <span class="cl i1"><span class="blank"><input class="blank-input" id="e8b3" size="8" maxlength="10" placeholder="???"></span></span>
+      <span class="cl"><span class="kw">*Programm</span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-chk" onclick="check('8',['NichtIstWand','LinksDrehen','Rand'])">✅ Antwort prüfen</button>
+      <button class="btn btn-sol" id="bs8" onclick="toggleSol('8')">🔓 Lösung anzeigen</button>
+      <button class="btn btn-rst" onclick="resetEx('8')">↺ Zurücksetzen</button>
+    </div>
+    <div class="feedback" id="fb8"></div>
+    <div class="sol-box" id="sol8">
+      <div class="sol-label">✅ Musterlösung:</div>
+      <div class="sol-code">
+        <span class="sc"><span class="skw">Anweisung</span> <span class="sfn">Rand</span></span>
+        <span class="sc i1"><span class="skw">wiederhole</span> 4 <span class="skw">mal</span></span>
+        <span class="sc i2"><span class="skw">wiederhole solange</span> <span class="fil">NichtIstWand</span></span>
+        <span class="sc i3"><span class="sfn">Hinlegen</span></span>
+        <span class="sc i3"><span class="sfn">Schritt</span></span>
+        <span class="sc i2"><span class="skw">*wiederhole</span></span>
+        <span class="sc i2"><span class="fil">LinksDrehen</span></span>
+        <span class="sc i1"><span class="skw">*wiederhole</span></span>
+        <span class="sc"><span class="skw">*Anweisung</span></span>
+        <span class="sc">&nbsp;</span>
+        <span class="sc"><span class="skw">Programm</span></span>
+        <span class="sc i1"><span class="fil">Rand</span></span>
+        <span class="sc"><span class="skw">*Programm</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="page-footer">
+  Robot Karol – Vorbereitungstest · Klasse 7 · Informatik · 2026
+</div>
+
+<script>
+var solved = {};
+
+function check(n, correct) {
+  var inputs = document.querySelectorAll('#ex'+n+' .blank-input');
+  var allOk = true;
+  inputs.forEach(function(inp, i) {
+    var val = inp.value.trim();
+    var exp = correct[i];
+    var wrap = inp.parentElement;
+    wrap.classList.remove('ok','err');
+    inp.classList.remove('ok','err');
+    if (val === '') { allOk = false; return; }
+    if (val.toLowerCase() === exp.toLowerCase()) {
+      wrap.classList.add('ok');
+      inp.classList.add('ok');
+    } else {
+      wrap.classList.add('err');
+      inp.classList.add('err');
+      allOk = false;
+    }
+  });
+  var fb = document.getElementById('fb'+n);
+  if (allOk) {
+    fb.textContent = '🎉 Alle Lücken richtig ausgefüllt!';
+    fb.className = 'feedback fb-ok';
+    if (!solved[n]) { solved[n] = true; updateProgress(); }
+  } else {
+    fb.textContent = '❌ Noch nicht ganz richtig – überprüfe die rot markierten Felder.';
+    fb.className = 'feedback fb-err';
+  }
+}
+
+function toggleSol(n) {
+  var box = document.getElementById('sol'+n);
+  var btn = document.getElementById('bs'+n);
+  if (box.classList.contains('show')) {
+    box.classList.remove('show');
+    btn.textContent = '🔓 Lösung anzeigen';
+  } else {
+    box.classList.add('show');
+    btn.textContent = '🔒 Lösung verstecken';
+  }
+}
+
+function resetEx(n) {
+  var inputs = document.querySelectorAll('#ex'+n+' .blank-input');
+  inputs.forEach(function(inp) {
+    inp.value = '';
+    inp.classList.remove('ok','err');
+    inp.parentElement.classList.remove('ok','err');
+  });
+  document.getElementById('fb'+n).textContent = '';
+  document.getElementById('fb'+n).className = 'feedback';
+}
+
+function updateProgress() {
+  var count = Object.keys(solved).length;
+  document.getElementById('prog-text').textContent = count + ' von 8 Aufgaben gelöst';
+  document.getElementById('prog-bar').style.width = (count * 12.5) + '%';
+}
+
+var refOpen = true;
+function toggleRef() {
+  var c = document.getElementById('ref-content');
+  var a = document.getElementById('ref-arrow');
+  refOpen = !refOpen;
+  c.style.display = refOpen ? '' : 'none';
+  a.textContent = refOpen ? '▲' : '▼';
+}
+</script>
+</body>
+</html>
